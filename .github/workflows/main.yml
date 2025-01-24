@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Run elasticsearch
-        run: docker-compose up -d es
+        run: docker compose up -d elastic
       - name: Setup PHP
         uses: shivammathur/setup-php@master
         with:

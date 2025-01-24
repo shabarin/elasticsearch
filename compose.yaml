@@ -1,0 +1,31 @@
+services:
+
+    php:
+        image: esmigrations_php
+        volumes:
+            - ./:/esmigrations
+        build:
+            context: ./docker/php
+        tty: true
+        depends_on:
+            -   elastic
+        environment:
+            ELASTICSEARCH_HOST: "http://elastic:9200"
+        command: sh -c
+            "/esmigrations/bin/wait-for-elasticsearch.sh elastic:9200 && php -a"
+
+    elastic:
+        image: esmigrations_elastic
+        environment:
+            discovery.type: single-node
+            node.name: esmigrations01
+            cluster.name: esmigrations-cluster
+            ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        build:
+            context: ./docker/elastic
+        ports:
+            - "9200:9200"

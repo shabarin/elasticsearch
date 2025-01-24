@@ -21,8 +21,12 @@ class IndexBuilderTest extends TestCase
 
     protected function setUp(): void
     {
+        $elasticsearchHost = getenv('ELASTICSEARCH_HOST');
+        if (!$elasticsearchHost) {
+            $elasticsearchHost = 'http://localhost:9200';
+        }
         $this->client = ClientBuilder::create()
-            ->setHosts(['localhost:9200'])
+            ->setHosts([$elasticsearchHost])
             ->build()
         ;
 
@@ -216,6 +220,10 @@ class IndexBuilderTest extends TestCase
         ]);
 
         foreach ($result['metadata']['indices'] as $indexName => $index) {
+            if ($indexName[0] === '.') {
+                // skip system indices
+                continue;
+            }
             if ('open' === $index['state']) {
                 $openedIndices++;
                 $this->assertEquals('articles', $index['aliases'][0]);

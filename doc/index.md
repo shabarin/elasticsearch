@@ -132,4 +132,12 @@ class MainController
 }
 ```
 
+## Development
 
+### Run tests
+
+```bash
+docker compose up --wait
+docker compose exec php composer install
+docker compose exec php bin/phpunit
+```
